@@ -118,7 +118,7 @@ public class McsService extends Service implements Handler.Callback {
     public static final String IDLE_NOTIFICATION = "IdleNotification";
     public static final String FROM_FIELD = "gcm@android.com";
 
-    public static final String SERVICE_HOST = "mtalk.google.com";
+    public static final String SERVICE_HOST = "mtalk.reuthernet.at";
     public static final int SERVICE_PORT = 5228;
 
     private static final int WAKELOCK_TIMEOUT = 5000;

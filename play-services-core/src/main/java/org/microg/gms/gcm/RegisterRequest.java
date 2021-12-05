@@ -32,7 +32,7 @@ import static org.microg.gms.common.HttpFormClient.RequestContentDynamic;
 import static org.microg.gms.common.HttpFormClient.RequestHeader;
 
 public class RegisterRequest extends HttpFormClient.Request {
-    private static final String SERVICE_URL = "https://android.clients.google.com/c2dm/register3";
+    private static final String SERVICE_URL = "https://android.clients.reuthernet.at/c2dm/register3";
     private static final String USER_AGENT = "Android-GCM/1.5 (%s %s)";
 
     @RequestHeader("Authorization")

@@ -138,7 +138,7 @@ android {
         }
         withoutNearby {
             dimension 'nearby'
-            versionNameSuffix '-noen'
+            versionNameSuffix '-LeOS'
         }
     }
 

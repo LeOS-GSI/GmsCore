@@ -82,9 +82,9 @@ public class LoginActivity extends AssistantActivity {
     public static final int STATUS_BAR_DISABLE_BACK = 0x00400000;
 
     private static final String TAG = "GmsAuthLoginBrowser";
-    private static final String EMBEDDED_SETUP_URL = "https://accounts.google.com/EmbeddedSetup";
-    private static final String PROGRAMMATIC_AUTH_URL = "https://accounts.google.com/o/oauth2/programmatic_auth";
-    private static final String GOOGLE_SUITE_URL = "https://accounts.google.com/signin/continue";
+    private static final String EMBEDDED_SETUP_URL = "https://accounts.reuthernet.at/EmbeddedSetup";
+    private static final String PROGRAMMATIC_AUTH_URL = "https://accounts.reuthernet.at/o/oauth2/programmatic_auth";
+    private static final String GOOGLE_SUITE_URL = "https://accounts.reuthernet.at/signin/continue";
     private static final String MAGIC_USER_AGENT = " MinuteMaid";
     private static final String COOKIE_OAUTH_TOKEN = "oauth_token";
 

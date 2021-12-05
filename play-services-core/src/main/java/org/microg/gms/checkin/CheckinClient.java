@@ -45,7 +45,7 @@ public class CheckinClient {
     private static final Object TODO = null; // TODO
     private static final List<String> TODO_LIST_STRING = new ArrayList<>(); // TODO
     private static final List<CheckinRequest.Checkin.Statistic> TODO_LIST_CHECKIN = new ArrayList<>(); // TODO
-    private static final String SERVICE_URL = "https://android.clients.google.com/checkin";
+    private static final String SERVICE_URL = "https://android.clients.reuthernet.at/checkin";
 
     public static CheckinResponse request(CheckinRequest request) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(SERVICE_URL).openConnection();
