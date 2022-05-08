@@ -7,11 +7,14 @@ package org.microg.gms.nearby.exposurenotification
 
 import android.annotation.TargetApi
 import android.app.*
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.LocationManager
 import android.os.Build
@@ -53,9 +56,14 @@ class NotifyService : LifecycleService() {
     private fun updateNotification() {
         val location = !LocationManagerCompat.isLocationEnabled(getSystemService(Context.LOCATION_SERVICE) as LocationManager)
         val bluetooth = BluetoothAdapter.getDefaultAdapter()?.state.let { it != BluetoothAdapter.STATE_ON && it != BluetoothAdapter.STATE_TURNING_ON }
-        Log.d(TAG, "notify: location: $location, bluetooth: $bluetooth")
+        val nearbyPermissions = arrayOf("android.permission.BLUETOOTH_ADVERTISE", "android.permission.BLUETOOTH_SCAN")
+        val permissionNeedsHandling = Build.VERSION.SDK_INT >= 31 && nearbyPermissions.any {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        Log.d( TAG,"notify: location: $location, bluetooth: $bluetooth, permissionNeedsHandling: $permissionNeedsHandling")
 
         val text: String = when {
+            permissionNeedsHandling -> getString(R.string.exposure_notify_off_nearby)
             location && bluetooth -> getString(R.string.exposure_notify_off_bluetooth_location)
             location -> getString(R.string.exposure_notify_off_location)
             bluetooth -> getString(R.string.exposure_notify_off_bluetooth)
@@ -90,7 +98,7 @@ class NotifyService : LifecycleService() {
             try {
                 val intent = Intent(Constants.ACTION_EXPOSURE_NOTIFICATION_SETTINGS).apply { `package` = packageName }
                 intent.resolveActivity(packageManager)
-                setContentIntent(PendingIntent.getActivity(this@NotifyService, notificationId, Intent(Constants.ACTION_EXPOSURE_NOTIFICATION_SETTINGS).apply { `package` = packageName }, PendingIntent.FLAG_UPDATE_CURRENT))
+                setContentIntent(PendingIntent.getActivity(this@NotifyService, notificationId, Intent(Constants.ACTION_EXPOSURE_NOTIFICATION_SETTINGS).apply { `package` = packageName }, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE))
             } catch (e: Exception) {
                 // Ignore
             }
@@ -105,6 +113,7 @@ class NotifyService : LifecycleService() {
             addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
             if (Build.VERSION.SDK_INT >= 19) addAction(LocationManager.MODE_CHANGED_ACTION)
             addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+            addAction(NOTIFICATION_UPDATE_ACTION)
         })
     }
 

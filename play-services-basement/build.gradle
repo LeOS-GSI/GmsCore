@@ -15,15 +15,16 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 dependencies {
     api "org.microg:safe-parcel:$safeParcelVersion"
 
-    implementation "androidx.annotation:annotation:$annotationVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    // Dependencies from play-services-basement:18.0.0
+    api "androidx.collection:collection:1.0.0"
+    api "androidx.core:core:1.2.0"
+    api "androidx.fragment:fragment:1.0.0"
 }
 
 android {
@@ -40,10 +41,6 @@ android {
         minSdkVersion androidMinSdk
         targetSdkVersion androidTargetSdk
         buildConfigField "int", "VERSION_CODE", "$appVersionCode"
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
     }
 
     compileOptions {

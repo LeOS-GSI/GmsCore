@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.google.android.gms",
+  "variantName": "withVtmWithoutNearbyRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 214816049,
+      "versionName": "0.2.24.214816-dirty-vtm-LeOS",
+      "outputFile": "play-services-core-withVtm-withoutNearby-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

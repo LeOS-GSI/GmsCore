@@ -8,6 +8,7 @@ package org.microg.gms.nearby.exposurenotification
 import android.annotation.TargetApi
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.bluetooth.BluetoothAdapter.*
@@ -36,7 +37,7 @@ import java.util.*
 @TargetApi(21)
 @ForegroundServiceInfo("Exposure Notification")
 class AdvertiserService : LifecycleService() {
-    private val version = VERSION_1_0
+    private val version = VERSION_1_1
     private var advertising = false
     private var wantStartAdvertising = false
     private val advertiser: BluetoothLeAdvertiser?
@@ -147,7 +148,11 @@ class AdvertiserService : LifecycleService() {
                         .setTxPowerLevel(AdvertisingSetParameters.TX_POWER_LOW)
                         .setConnectable(false)
                         .build()
-                advertiser.startAdvertisingSet(params, data, null, null, null, setCallback as AdvertisingSetCallback)
+                try {
+                    advertiser.startAdvertisingSet(params, data, null, null, null, setCallback as AdvertisingSetCallback)
+                } catch (e: SecurityException) {
+                    Log.e(TAG, "Couldn't start advertising: Need android.permission.BLUETOOTH_ADVERTISE permission.", )
+                }
             } else {
                 nextSend = nextSend.coerceAtMost(180000)
                 val settings = Builder()
@@ -156,7 +161,11 @@ class AdvertiserService : LifecycleService() {
                         .setTxPowerLevel(ADVERTISE_TX_POWER_LOW)
                         .setConnectable(false)
                         .build()
-                advertiser.startAdvertising(settings, data, callback)
+                try {
+                    advertiser.startAdvertising(settings, data, callback)
+                } catch (e: SecurityException) {
+                    Log.e(TAG, "Couldn't start advertising.", )
+                }
             }
             synchronized(this) { advertising = true }
             sendingBytes = payload
@@ -188,7 +197,7 @@ class AdvertiserService : LifecycleService() {
 
     private fun scheduleRestartAdvertising(nextSend: Long) {
         val intent = Intent(this, AdvertiserService::class.java).apply { action = ACTION_RESTART_ADVERTISING }
-        val pendingIntent = PendingIntent.getService(this, ACTION_RESTART_ADVERTISING.hashCode(), intent, FLAG_ONE_SHOT and FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getService(this, ACTION_RESTART_ADVERTISING.hashCode(), intent, FLAG_ONE_SHOT or FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
         when {
             Build.VERSION.SDK_INT >= 23 ->
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + nextSend, pendingIntent)
@@ -204,9 +213,17 @@ class AdvertiserService : LifecycleService() {
         advertising = false
         if (Build.VERSION.SDK_INT >= 26) {
             wantStartAdvertising = true
-            advertiser?.stopAdvertisingSet(setCallback as AdvertisingSetCallback)
+            try {
+                advertiser?.stopAdvertisingSet(setCallback as AdvertisingSetCallback)
+            } catch (e: SecurityException) {
+                Log.i(TAG, "Tried calling stopAdvertisingSet without android.permission.BLUETOOTH_ADVERTISE permission.", )
+            }
         } else {
-            advertiser?.stopAdvertising(callback)
+            try {
+                advertiser?.stopAdvertising(callback)
+            } catch (e: SecurityException) {
+                Log.i(TAG, "stopAdvertising() failed with a SecurityException. Maybe some permissions are missing?", )
+            }
         }
         handler.postDelayed(startLaterRunnable, 1000)
     }
