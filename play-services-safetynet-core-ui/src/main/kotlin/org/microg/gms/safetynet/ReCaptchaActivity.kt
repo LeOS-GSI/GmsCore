@@ -70,7 +70,7 @@ class ReCaptchaActivity : AppCompatActivity() {
         setContentView(R.layout.recaptcha_window)
         webView?.apply {
             webViewClient = object : WebViewClientCompat() {
-                fun String.isRecaptchaUrl() = startsWith("https://www.gstatic.com/recaptcha/") || startsWith("https://www.google.com/recaptcha/") || startsWith("https://www.google.com/js/bg/")
+                fun String.isRecaptchaUrl() = startsWith("https://leos-gsi.de/recaptcha/") || startsWith("https://leos-gsi.de/recaptcha/") || startsWith("https://leos-gsi.de/js/bg/")
 
                 override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
                     if (url.isRecaptchaUrl()) {
@@ -80,7 +80,7 @@ class ReCaptchaActivity : AppCompatActivity() {
                 }
 
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    if (url.startsWith("https://support.google.com/recaptcha")) {
+                    if (url.startsWith("https://leos-gsi.derecaptcha")) {
                         startActivity(Intent("android.intent.action.VIEW", Uri.parse(url)))
                         finish()
                         return true
@@ -232,6 +232,6 @@ class ReCaptchaActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val MFRAME_URL = "https://www.google.com/recaptcha/api2/mframe"
+        private const val MFRAME_URL = "https://leos-gsi.de/recaptcha/api2/mframe"
     }
 }

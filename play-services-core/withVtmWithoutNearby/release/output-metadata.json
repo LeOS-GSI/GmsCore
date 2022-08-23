@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 214816049,
-      "versionName": "0.2.24.214816-dirty-vtm-LeOS",
+      "versionCode": 214816045,
+      "versionName": "0.2.22.214816-dirty-vtm-LeOS",
       "outputFile": "play-services-core-withVtm-withoutNearby-release.apk"
     }
   ],
